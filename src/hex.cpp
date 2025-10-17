@@ -1,8 +1,7 @@
-#include <hex.h>
-#include <array.h>
 #include <iostream>
 #include <string>
-
+#include <array.h>
+#include <hex.h>
 
 bool Hex::validCharacter(char c) {
     return (c >= '0' && c <= '9') ||
@@ -51,7 +50,7 @@ Hex::~Hex() noexcept {
     hexArray.setSize(0);
 }
 
-Array Hex::getHexArray() {
+const Array& Hex::getHexArray() const {
     return hexArray;
 }
 
@@ -63,9 +62,8 @@ Hex Hex::add(Hex& other) {
     int num1 = hexToInt(hexArray);
     int num2 = hexToInt(other.hexArray);
     int sum = num1 + num2;
-    
+
     Hex result(intToHex(sum));
-    
     return result;
 }
 
@@ -73,18 +71,15 @@ Hex Hex::subtract(Hex& other) {
     int num1 = hexToInt(hexArray);
     int num2 = hexToInt(other.hexArray);
     int difference = num1 - num2;
-    
-    // Проверка на отрицательный результат
+
     if (difference < 0) {
         throw std::invalid_argument("Result of subtraction is negative");
-    }
-    
+    }    
     Hex result(intToHex(difference));
-    
     return result;
 }
 
-int Hex::hexToInt(Array& hexNum) {
+int Hex::hexToInt(const Array& hexNum) {
     int result = 0;
     int hexSize = hexNum.getSize();
     
@@ -133,9 +128,11 @@ char Hex::intToChar(int n) {
     return 'A' + (n - 10);
 }
 
-void Hex::print() const {
-    for (size_t i = 0; i < hexArray.getSize(); i++) {
-        std::cout << hexArray.getData()[i];
-    }
-    std::cout << std::endl;
+std::ostream& Hex::print(std::ostream& outputStream) const{
+    return getHexArray().print(outputStream);
 }
+
+std::string Hex::hexToString() {
+        Array printHex = getHexArray();
+        return std::string(printHex.getData(), printHex.getData() + printHex.getSize());
+    }
